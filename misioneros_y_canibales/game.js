@@ -267,6 +267,8 @@
 
 		cantMisioneros = 0;
 		cantCanibales = 0;
+
+		console.log("GANASTE O PERDISTE: " + gameover);
 	}
 
 	function enableInputs()
