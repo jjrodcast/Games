@@ -13,6 +13,10 @@
 	var zonaDerecha = false;
 	var zonaIzquierda = false;
 
+	var end; // fin de juego (1 termina juego)
+	var showMessage;
+	var KEY_R = 82;
+
 	var cantMisioneros=0;
 	var cantCanibales=0;
 
@@ -49,6 +53,7 @@
 	
 	/*--- Funcion init ---*/
 	function init() {
+		
 		canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		canvas.width = 900;
@@ -61,6 +66,9 @@
 		listaPersonajes.push(new personaje(760,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 110));
 		listaPersonajes.push(new personaje(800,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 70));
 		listaPersonajes.push(new personaje(840,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 30));
+
+		end = false; // ejecuta el juego mientras no sea halla finalizado
+		showMessage = 1; // muestra el mensaje
 
 		enableInputs();
 		run();
@@ -75,8 +83,14 @@
 
 	/*--- Funcion repaint ---*/
 	function repaint() {
-		requestAnimationFrame(repaint);
-		paint(ctx);
+		if(end == false){ requestAnimationFrame(repaint); paint(ctx); } 
+		if(end){
+		if(winner && showMessage == 1){ alert("GANASTE"); showMessage = 2;} 
+		if(gameover && showMessage == 1){ alert("PERDISTE"); showMessage = 2;}
+			$("#btnReiniciar").click(function (e) {
+				location.href = "index.html";
+			});
+		}
 	}
 
 	/*--- Funcion reset ---*/
@@ -222,8 +236,8 @@
 			}
 		}
 		
-		if(gameover)window.console.warn("perdio");
-		if(winner)window.console.warn("ganaste");
+		if(gameover) end = !end;
+		if(winner)	end = !end;
 
 		for(var i = 0;i < listaPersonajes.length; i++)
 		{
@@ -345,4 +359,5 @@
 
 
 })();
+
 
