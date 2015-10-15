@@ -8,14 +8,9 @@
 	var gameover = false;
 	var winner = false;
 	var mousex=0,mousey=0;
-	var flagmouseover=false;
-	var totalEnLancha = 0;
+
 	var zonaDerecha = false;
 	var zonaIzquierda = false;
-
-	var end; // fin de juego (1 termina juego)
-	var showMessage;
-	var KEY_R = 82;
 
 	var cantMisioneros=0;
 	var cantCanibales=0;
@@ -32,16 +27,14 @@
 	agua.src = 'img/agua.png';
 	imagenLancha.src = 'img/lancha.png';
 
-	/*--- Sprites ---*/
-	var spritesMisioneroIzquierda = new Image();
-	var spritesMisioneroDerecha = new Image();
-	var spritesCanibalIzquierda = new Image();
-	var spritesCanibalDerecha = new Image();
-	spritesMisioneroIzquierda.src = 'img/misionero_izquierda.png';
-	spritesMisioneroDerecha.src = 'img/misionero_derecha.png';
-	spritesCanibalIzquierda.src = 'img/canibal_izquierda.png';
-	spritesCanibalDerecha.src = 'img/canibal_derecha.png';
-	/*--- Fin Sprites ---*/
+	var granjero = new Image();
+	var zorro = new Image();
+	var oveja = new Image();
+	var col = new Image();
+	granjero.src = 'img/Farmer.png';
+	zorro.src = "img/zorro.png";
+	oveja.src = "img/oveja.png";
+	col.src = "img/col.png";
 
 	/*--- Objetos ---*/
 	//para escalar las imagenes en el tercer y cuarto parametro aumentar el tamaño :D
@@ -49,27 +42,19 @@
 	var lancha = new personaje(526,198,108,52,'lancha',0, imagenLancha, imagenLancha);
 
 	var listaPersonajes = [];
-	/*---------------*/
+
 	
 	/*--- Funcion init ---*/
 	function init() {
-		
 		canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		canvas.width = 900;
 		canvas.height = 288;
 
-		listaPersonajes.push(new personaje(640,142,34,67,'misionero',0,spritesMisioneroIzquierda,spritesMisioneroDerecha, 230));
-		listaPersonajes.push(new personaje(680,142,34,67,'misionero',0,spritesMisioneroIzquierda,spritesMisioneroDerecha, 190));
-		listaPersonajes.push(new personaje(720,142,34,67,'misionero',0,spritesMisioneroIzquierda,spritesMisioneroDerecha, 150));
-
-		listaPersonajes.push(new personaje(760,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 110));
-		listaPersonajes.push(new personaje(800,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 70));
-		listaPersonajes.push(new personaje(840,142,33,67,'canibal',0,spritesCanibalIzquierda,spritesCanibalDerecha, 30));
-
-		end = false; // ejecuta el juego mientras no sea halla finalizado
-		showMessage = 1; // muestra el mensaje
-
+		//listaPersonajes.push(new personaje(640,142,34,67,'granjero',0,granjero,granjero, 230));
+		listaPersonajes.push(new personaje(640,172,40,30,'zorro',0,zorro,zorro));
+		listaPersonajes.push(new personaje(690,172,40,30,'oveja',0,oveja,oveja));
+		listaPersonajes.push(new personaje(740,172,40,30,'col',0,col,col));
 		enableInputs();
 		run();
 		repaint();
@@ -83,99 +68,112 @@
 
 	/*--- Funcion repaint ---*/
 	function repaint() {
-		if(end == false){ requestAnimationFrame(repaint); paint(ctx); } 
-		if(end){
-		if(winner && showMessage == 1){ alert("GANASTE"); showMessage = 2;} 
-		if(gameover && showMessage == 1){ alert("PERDISTE"); showMessage = 2;}
-			$("#btnReiniciar").click(function (e) {
-				location.href = "index.html";
-			});
-		}
+		requestAnimationFrame(repaint);
+		paint(ctx);
 	}
 
 	/*--- Funcion reset ---*/
 	function reset() 
 	{
+		for(var i = 0; i < listaPersonajes.length; i++)
+		{
+			listaPersonajes[i].setPosition(listaPersonajes[i].xOrigen,listaPersonajes[i].yOrigen,0,0);
+			listaPersonajes[i].orilla = 0;
+			listaPersonajes[i].mouseEncima = 0;
+			listaPersonajes[i].inicioSprite = 0;
+		}
 
+		lancha.setPosition(lancha.xOrigen, lancha.yOrigen);
+		zonaDerecha = false;
+		zonaIzquierda = false;
+		cantMisioneros=0;
+		cantCanibales=0;
+		moverLancha = false;
+		lanchaEnOrillaDestino = false;
 	}
 
 	/*--- Funcion act ---*/
 	function act() 
 	{
-		for(var i = 0;i < listaPersonajes.length; i++)
+		if(!gameover && !winner)
 		{
-			if(listaPersonajes[i].intersects(mousex,mousey))//si el mouse esta sobre el personaje
+			for(var i = 0;i < listaPersonajes.length; i++)
 			{
-				listaPersonajes[i].mouseEncima = 1;
-				if(lastPress==1)//si se presiono el click izquierdo encima del personaje
+				if(listaPersonajes[i].intersects(mousex,mousey))//si el mouse esta sobre el personaje
 				{
-
-					if(lanchaEnOrillaDestino && listaPersonajes[i].orilla)
+					if(!moverLancha)
 					{
-						if(listaPersonajes[i].sentado==1)//si esta sentado que vuelva a la orilla
+						listaPersonajes[i].mouseEncima = 1;
+						if(lastPress==1)//si se presiono el click izquierdo encima del personaje
 						{
 
-							if(listaPersonajes[i].x==323)zonaDerecha=false;
-							else if(listaPersonajes[i].x==293)zonaIzquierda=false;
+							if(lanchaEnOrillaDestino && listaPersonajes[i].orilla)
+							{
+								if(listaPersonajes[i].sentado==1)//si esta sentado que vuelva a la orilla
+								{
+				
+									if(listaPersonajes[i].x==323)zonaDerecha=false;
+									else if(listaPersonajes[i].x==293)zonaIzquierda=false;
 
-							listaPersonajes[i].setPosition(listaPersonajes[i].xDestino,listaPersonajes[i].yDestino,1,0);
-							listaPersonajes[i].inicioSprite = 0;
-							totalEnLancha--;
-						}
-						else
-						{
-							if(totalEnLancha < 2 && !zonaDerecha)
-							{
-								listaPersonajes[i].setPosition(323,169,0,1);
-								totalEnLancha++;
-								zonaDerecha = true;
+									listaPersonajes[i].setPosition(listaPersonajes[i].xDestino,listaPersonajes[i].yDestino,1,0);
+									listaPersonajes[i].inicioSprite = 0;
+								}
+								else
+								{
+									if(!zonaDerecha)
+									{
+								
+										listaPersonajes[i].setPosition(323,169,0,1);
+										zonaDerecha = true;
+									}
+									else if(!zonaIzquierda)
+									{
+										
+										listaPersonajes[i].setPosition(293,169,1,1);
+										zonaIzquierda = true;
+									}
+								}
 							}
-							else if(totalEnLancha < 2 && !zonaIzquierda)
+							else if(!lanchaEnOrillaDestino && !listaPersonajes[i].orilla)
 							{
-								listaPersonajes[i].setPosition(293,169,1,1);
-								totalEnLancha++;
-								zonaIzquierda = true;
-							}
-						}
-					}
-					else if(!lanchaEnOrillaDestino && !listaPersonajes[i].orilla)
-					{
-						if(listaPersonajes[i].sentado==1)//si esta sentado que vuelva a la orilla
-						{
-							if(listaPersonajes[i].x==574)zonaDerecha=false;
-							else if(listaPersonajes[i].x==544)zonaIzquierda=false;
+								if(listaPersonajes[i].sentado==1)//si esta sentado que vuelva a la orilla
+								{
+									
+									if(listaPersonajes[i].x==574)zonaDerecha=false;
+									else if(listaPersonajes[i].x==544)zonaIzquierda=false;
 
-							listaPersonajes[i].setPosition(listaPersonajes[i].xOrigen,listaPersonajes[i].yOrigen,0,0);
-							listaPersonajes[i].inicioSprite = 0;
-							totalEnLancha--;
-						}
-						else
-						{
-							if(totalEnLancha < 2 && !zonaDerecha)
-							{
-								listaPersonajes[i].setPosition(574,169,0,1);
-								totalEnLancha++;
-								zonaDerecha = true;
+									listaPersonajes[i].setPosition(listaPersonajes[i].xOrigen,listaPersonajes[i].yOrigen,0,0);
+									listaPersonajes[i].inicioSprite = 0;
+								}
+								else
+								{
+									if(!zonaDerecha)
+									{
+										
+										listaPersonajes[i].setPosition(574,169,0,1);
+										zonaDerecha = true;
+									}
+									else if(!zonaIzquierda)
+									{
+									
+										listaPersonajes[i].setPosition(544,169,1,1);
+										zonaIzquierda = true;
+									}
+									
+								}
 							}
-							else if(totalEnLancha < 2 && !zonaIzquierda)
-							{
-								listaPersonajes[i].setPosition(544,169,1,1);
-								totalEnLancha++;
-								zonaIzquierda = true;
-							}
-							
 						}
 					}
 				}
+				else listaPersonajes[i].mouseEncima = 0;
 			}
-			else listaPersonajes[i].mouseEncima = 0;
 		}
-		
 		if(lastPress == KEY_ENTER)
 		{
-			if(totalEnLancha>0)moverLancha = true;
+			if(zonaDerecha || zonaIzquierda) moverLancha = true;
+			if(gameover)gameover=false;
+			if(winner)winner=false;
 		}//si se presiona la tecla ENTER se activa la bandera para mover la lancha.
-
 		lastPress = -1;
 	}
 
@@ -212,7 +210,6 @@
 				}
 				lanchaEnOrillaDestino = true;
 				moverLancha = false;
-				//
 				verificar();
 			} 
 		}
@@ -231,17 +228,15 @@
 				}
 				lanchaEnOrillaDestino = false;
 				moverLancha = false;
-				//
 				verificar();
 			}
 		}
 		
-		if(gameover) end = !end;
-		if(winner)	end = !end;
+		
 
 		for(var i = 0;i < listaPersonajes.length; i++)
 		{
-			if(listaPersonajes[i].name == 'misionero')
+			if(listaPersonajes[i].name == 'zorro')
 			{
 				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 23, 0, 23, 45);
 				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite, 0, 23, 45);
@@ -254,6 +249,25 @@
 			
 		}
 		lancha.drawImageArea(ctx, lancha.spriteActual, 0, 0, 59, 35);
+
+		if(gameover || winner)
+		{
+			ctx.textAlign = 'center';
+			ctx.font="40px Arial Black";
+			ctx.fillStyle = 'white';
+			if(gameover)
+			{
+				ctx.fillText('GAME OVER', 450, 144);
+			}
+			else if(winner)
+			{
+				ctx.fillText('WINNER', 450, 144);
+			}
+			ctx.font="20px Arial";
+			ctx.fillText('(Pulsa Enter para reiniciar)',450,164);
+			reset();
+		}
+		
 	}
 
 	function verificar()
@@ -281,8 +295,6 @@
 
 		cantMisioneros = 0;
 		cantCanibales = 0;
-
-		console.log("GANASTE O PERDISTE: " + gameover);
 	}
 
 	function enableInputs()
@@ -290,7 +302,7 @@
 		document.addEventListener('mousemove',
 			function(evt)
 			{ 
-				mousex=evt.pageX-canvas.offsetLeft; 
+				mousex=evt.pageX;//-canvas.offsetLeft; 
 				mousey=evt.pageY-canvas.offsetTop; 
 			},false); 
 		canvas.addEventListener('mousedown', function(evt){ lastPress = evt.which; },false);
@@ -331,7 +343,7 @@
 		this.sentido = sentido;
 		this.inicioSprite = 46;
 		this.spriteActual = (this.sentido == 0) ? this.spriteIzquierda : this.spriteDerecha;
-		this.sentado = sentado;
+		this.sentado = (sentado == null) ? 0 : sentado;
 	}
 
 	personaje.prototype.drawImageArea = function(ctx, img, sx, sy, sw, sh)
@@ -359,5 +371,3 @@
 
 
 })();
-
-
