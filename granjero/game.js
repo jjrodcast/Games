@@ -52,9 +52,9 @@
 		canvas.height = 288;
 
 		//listaPersonajes.push(new personaje(640,142,34,67,'granjero',0,granjero,granjero, 230));
-		listaPersonajes.push(new personaje(640,172,40,30,'zorro',0,zorro,zorro));
-		listaPersonajes.push(new personaje(690,172,40,30,'oveja',0,oveja,oveja));
-		listaPersonajes.push(new personaje(740,172,40,30,'col',0,col,col));
+		listaPersonajes.push(new personaje(640,185,50,50,'zorro',0,zorro,zorro));
+		listaPersonajes.push(new personaje(690,185,50,50,'oveja',0,oveja,oveja));
+		listaPersonajes.push(new personaje(740,182,50,50,'col',0,col,col));
 		enableInputs();
 		run();
 		repaint();
@@ -238,13 +238,13 @@
 		{
 			if(listaPersonajes[i].name == 'zorro')
 			{
-				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 23, 0, 23, 45);
-				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite, 0, 23, 45);
+				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 23, 0, 50, 50);
+				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite, 0, 50, 50);
 			}
 			else
 			{
-				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual,21,0,21,43);
-				else listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite,0,21,43);
+				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual,21,0,50, 50);
+				else listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite,0,50, 50);
 			}
 			
 		}
@@ -302,7 +302,7 @@
 		document.addEventListener('mousemove',
 			function(evt)
 			{ 
-				mousex=evt.pageX;//-canvas.offsetLeft; 
+				mousex=evt.pageX-canvas.offsetLeft; 
 				mousey=evt.pageY-canvas.offsetTop; 
 			},false); 
 		canvas.addEventListener('mousedown', function(evt){ lastPress = evt.which; },false);
