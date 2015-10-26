@@ -12,8 +12,9 @@
 	var zonaDerecha = false;
 	var zonaIzquierda = false;
 
-	var cantMisioneros=0;
-	var cantCanibales=0;
+	var cantZorro = 0;
+	var cantOveja = 0;
+	var cantCol = 0;
 
 	var moverLancha = false;
 	var lanchaEnOrillaDestino = false;
@@ -22,6 +23,7 @@
 	var baseRio = new Image();
 	var agua = new Image();
 	var imagenLancha = new Image();
+
 	background.src = 'img/fondo.png';
 	baseRio.src = 'img/base_rio.png';
 	agua.src = 'img/agua.png';
@@ -31,14 +33,13 @@
 	var zorro = new Image();
 	var oveja = new Image();
 	var col = new Image();
+	
 	granjero.src = 'img/Farmer.png';
 	zorro.src = "img/zorro.png";
 	oveja.src = "img/oveja.png";
 	col.src = "img/col.png";
 
-	/*--- Objetos ---*/
-	//para escalar las imagenes en el tercer y cuarto parametro aumentar el tamaño :D
-	//var m1 = new personaje(680,142,34,67,'misionero 1',0, spritesMisioneroIzquierda, spritesMisioneroDerecha);
+	
 	var lancha = new personaje(526,198,108,52,'lancha',0, imagenLancha, imagenLancha);
 
 	var listaPersonajes = [];
@@ -52,9 +53,9 @@
 		canvas.height = 288;
 
 		//listaPersonajes.push(new personaje(640,142,34,67,'granjero',0,granjero,granjero, 230));
-		listaPersonajes.push(new personaje(640,158,50,50,'zorro',0,zorro,zorro));
-		listaPersonajes.push(new personaje(690,158,50,50,'oveja',0,oveja,oveja));
-		listaPersonajes.push(new personaje(740,158,50,50,'col',0,col,col));
+		listaPersonajes.push(new personaje(640,158,50,50,'zorro',0,zorro,zorro, 230));
+		listaPersonajes.push(new personaje(690,158,50,50,'oveja',0,oveja,oveja, 180));
+		listaPersonajes.push(new personaje(740,158,50,50,'col',0,col,col, 130));
 		enableInputs();
 		run();
 		repaint();
@@ -86,8 +87,6 @@
 		lancha.setPosition(lancha.xOrigen, lancha.yOrigen);
 		zonaDerecha = false;
 		zonaIzquierda = false;
-		cantMisioneros=0;
-		cantCanibales=0;
 		moverLancha = false;
 		lanchaEnOrillaDestino = false;
 	}
@@ -195,8 +194,9 @@
 		//Dibujar agua
 		ctx.drawImage(agua,275,canvas.height-82,348,82);
 
+
 		if(moverLancha && !lanchaEnOrillaDestino)
-		{
+		{	
 			for(var i = 0;i < listaPersonajes.length; i++)
 			{
 				if(listaPersonajes[i].sentado)listaPersonajes[i].x -= 1;
@@ -215,7 +215,7 @@
 		}
 		else if(moverLancha && lanchaEnOrillaDestino)
 		{
-			for(var i = 0;i < listaPersonajes.length; i++)
+			for(var i = 0; i < listaPersonajes.length; i++)
 			{
 				if(listaPersonajes[i].sentado)listaPersonajes[i].x += 1;
 			}
@@ -232,12 +232,10 @@
 			}
 		}
 		
-		
-
+	
 		for(var i = 0; i < listaPersonajes.length; i++)
 		{	
-			ctx.strokeRect(listaPersonajes[i].x, listaPersonajes[i].y, listaPersonajes[i].width, listaPersonajes[i].height);
-			//ctx.fillRect(listaPersonajes[i].width,listaPersonajes[i].height,canvas.width,canvas.height);
+			
 			if(listaPersonajes[i].name == 'zorro')
 			{
 				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 0, 0, 30, 24);
@@ -258,51 +256,60 @@
 		}
 		lancha.drawImageArea(ctx, lancha.spriteActual, 0, 0, 59, 35);
 
-		if(gameover || winner)
-		{
+
+		if(listaPersonajes[0].orilla==1 && listaPersonajes[1].orilla==1 && listaPersonajes[2].orilla==1) {
+			winner = true;
 			ctx.textAlign = 'center';
 			ctx.font="40px Arial Black";
 			ctx.fillStyle = 'white';
-			if(gameover)
-			{
-				ctx.fillText('GAME OVER', 450, 144);
-			}
-			else if(winner)
-			{
-				ctx.fillText('WINNER', 450, 144);
-			}
+			ctx.fillText('WINNER', 450, 144);
 			ctx.font="20px Arial";
 			ctx.fillText('(Pulsa Enter para reiniciar)',450,164);
 			reset();
 		}
-		
+
+		else if(gameover)
+		{
+			ctx.textAlign = 'center';
+			ctx.font="40px Arial Black";
+			ctx.fillStyle = 'white';
+			ctx.fillText('GAME OVER', 450, 144);
+			ctx.font="20px Arial";
+			ctx.fillText('(Pulsa Enter para reiniciar)',450,164);
+			reset();
+		}
 	}
 
 	function verificar()
 	{
-		for(var i = 0;i < listaPersonajes.length; i++)
-		{
-			if(listaPersonajes[i].name == 'misionero' && listaPersonajes[i].orilla==1)cantMisioneros++;
-			if(listaPersonajes[i].name == 'canibal' && listaPersonajes[i].orilla==1)cantCanibales++;
+		for(var i = 0; i < listaPersonajes.length; i++)
+		{	
+			if(listaPersonajes[i].name == 'zorro' && listaPersonajes[i].orilla==1) cantZorro = 1;
+			if(listaPersonajes[i].name == 'oveja' && listaPersonajes[i].orilla==1) cantOveja = 1;
+			if(listaPersonajes[i].name == 'col' && listaPersonajes[i].orilla==1) cantCol = 1;
 		}
 
+		if((cantZorro == cantOveja && cantOveja != cantCol && listaPersonajes[0].sentado == 0 && listaPersonajes[1].sentado == 0) || 
+			(cantOveja == cantCol && cantOveja != cantZorro && listaPersonajes[1].sentado == 0 && listaPersonajes[2].sentado == 0)) gameover = true;
 
-		if(cantCanibales > cantMisioneros && cantMisioneros > 0)gameover=true;
-		if(cantMisioneros == cantCanibales && lanchaEnOrillaDestino && cantCanibales + cantMisioneros == 6)winner=true;
+		cantZorro = 0;
+		cantOveja = 0;
+		cantCol = 0;
 
-		cantMisioneros = 0;
-		cantCanibales = 0;
 		for(var i = 0;i < listaPersonajes.length; i++)
 		{
-			if(listaPersonajes[i].name == 'misionero' && listaPersonajes[i].orilla==0)cantMisioneros++;
-			if(listaPersonajes[i].name == 'canibal' && listaPersonajes[i].orilla==0)cantCanibales++;
+			if(listaPersonajes[i].name == 'zorro' && listaPersonajes[i].orilla==0) cantZorro = 0;
+			if(listaPersonajes[i].name == 'oveja' && listaPersonajes[i].orilla==0) cantOveja = 0;
+			if(listaPersonajes[i].name == 'col' && listaPersonajes[i].orilla==0) cantCol = 0;
 		}
 
-		if(cantCanibales > cantMisioneros && cantMisioneros > 0)gameover=true;
+		if((cantZorro == cantOveja && cantOveja != cantCol && listaPersonajes[0].sentado == 0 && listaPersonajes[1].sentado == 0) || 
+			(cantOveja == cantCol && cantOveja != cantZorro && listaPersonajes[1].sentado == 0 && listaPersonajes[2].sentado == 0)) gameover = true;
 
 
-		cantMisioneros = 0;
-		cantCanibales = 0;
+		cantZorro = 0;
+		cantOveja = 0;
+		cantCol = 0;
 	}
 
 	function enableInputs()
@@ -316,11 +323,7 @@
 		canvas.addEventListener('mousedown', function(evt){ lastPress = evt.which; },false);
 		document.addEventListener('keydown', function (evtx) { lastPress = evtx.which; }, false);
 	}
-	/*
-		para crear un objeto de tipo personaje seria asi:
-		var m1 = new personaje(50,50,100,60,'misionero 1',,);
-	*/
-
+	
 	function personaje(x, y, width, height, name, sentido, spriteIzquierda, spriteDerecha, xDestino, yDestino, inicioSprite, sentado, orilla)
 	{
 		this.x = (x == null) ? 0 : x;
