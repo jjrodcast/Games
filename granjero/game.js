@@ -52,9 +52,9 @@
 		canvas.height = 288;
 
 		//listaPersonajes.push(new personaje(640,142,34,67,'granjero',0,granjero,granjero, 230));
-		listaPersonajes.push(new personaje(640,185,50,50,'zorro',0,zorro,zorro));
-		listaPersonajes.push(new personaje(690,185,50,50,'oveja',0,oveja,oveja));
-		listaPersonajes.push(new personaje(740,182,50,50,'col',0,col,col));
+		listaPersonajes.push(new personaje(640,158,50,50,'zorro',0,zorro,zorro));
+		listaPersonajes.push(new personaje(690,158,50,50,'oveja',0,oveja,oveja));
+		listaPersonajes.push(new personaje(740,158,50,50,'col',0,col,col));
 		enableInputs();
 		run();
 		repaint();
@@ -115,7 +115,7 @@
 									if(listaPersonajes[i].x==323)zonaDerecha=false;
 									else if(listaPersonajes[i].x==293)zonaIzquierda=false;
 
-									listaPersonajes[i].setPosition(listaPersonajes[i].xDestino,listaPersonajes[i].yDestino,1,0);
+									listaPersonajes[i].setPosition(listaPersonajes[i].xDestino-50,listaPersonajes[i].yDestino,1,0);
 									listaPersonajes[i].inicioSprite = 0;
 								}
 								else
@@ -123,13 +123,13 @@
 									if(!zonaDerecha)
 									{
 								
-										listaPersonajes[i].setPosition(323,169,0,1);
+										listaPersonajes[i].setPosition(323,170,0,1);
 										zonaDerecha = true;
 									}
 									else if(!zonaIzquierda)
 									{
 										
-										listaPersonajes[i].setPosition(293,169,1,1);
+										listaPersonajes[i].setPosition(293,170,1,1);
 										zonaIzquierda = true;
 									}
 								}
@@ -150,13 +150,13 @@
 									if(!zonaDerecha)
 									{
 										
-										listaPersonajes[i].setPosition(574,169,0,1);
+										listaPersonajes[i].setPosition(544,170,0,1);
 										zonaDerecha = true;
 									}
 									else if(!zonaIzquierda)
 									{
 									
-										listaPersonajes[i].setPosition(544,169,1,1);
+										listaPersonajes[i].setPosition(544,170,1,1);
 										zonaIzquierda = true;
 									}
 									
@@ -234,17 +234,25 @@
 		
 		
 
-		for(var i = 0;i < listaPersonajes.length; i++)
-		{
+		for(var i = 0; i < listaPersonajes.length; i++)
+		{	
+			ctx.strokeRect(listaPersonajes[i].x, listaPersonajes[i].y, listaPersonajes[i].width, listaPersonajes[i].height);
+			//ctx.fillRect(listaPersonajes[i].width,listaPersonajes[i].height,canvas.width,canvas.height);
 			if(listaPersonajes[i].name == 'zorro')
 			{
-				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 23, 0, 50, 50);
-				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite, 0, 50, 50);
+				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 0, 0, 30, 24);
+				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, 0, 0, 30, 24);
+			}
+			else if(listaPersonajes[i].name == 'oveja')
+			{
+				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 0, 0, 30, 25);
+				else listaPersonajes[i].drawImageArea(ctx, listaPersonajes[i].spriteActual, 0, 0, 30, 25);
+
 			}
 			else
 			{
-				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual,21,0,50, 50);
-				else listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, listaPersonajes[i].inicioSprite,0,50, 50);
+				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual,0,0, 43, 28);
+				else listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 0 ,0, 43, 28);
 			}
 			
 		}
@@ -341,7 +349,7 @@
 		this.x = x;
 		this.y = y;
 		this.sentido = sentido;
-		this.inicioSprite = 46;
+		this.inicioSprite = 30;
 		this.spriteActual = (this.sentido == 0) ? this.spriteIzquierda : this.spriteDerecha;
 		this.sentado = (sentado == null) ? 0 : sentado;
 	}
