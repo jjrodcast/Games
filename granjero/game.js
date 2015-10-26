@@ -12,9 +12,14 @@
 	var zonaDerecha = false;
 	var zonaIzquierda = false;
 
+<<<<<<< HEAD
 	var cantZorro = 0;
 	var cantOveja = 0;
 	var cantCol = 0;
+=======
+	var cantMisioneros=0;
+	var cantCanibales=0;
+>>>>>>> master
 
 	var moverLancha = false;
 	var lanchaEnOrillaDestino = false;
@@ -23,7 +28,10 @@
 	var baseRio = new Image();
 	var agua = new Image();
 	var imagenLancha = new Image();
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 	background.src = 'img/fondo.png';
 	baseRio.src = 'img/base_rio.png';
 	agua.src = 'img/agua.png';
@@ -33,13 +41,22 @@
 	var zorro = new Image();
 	var oveja = new Image();
 	var col = new Image();
+<<<<<<< HEAD
 	
+=======
+>>>>>>> master
 	granjero.src = 'img/Farmer.png';
 	zorro.src = "img/zorro.png";
 	oveja.src = "img/oveja.png";
 	col.src = "img/col.png";
 
+<<<<<<< HEAD
 	
+=======
+	/*--- Objetos ---*/
+	//para escalar las imagenes en el tercer y cuarto parametro aumentar el tamaño :D
+	//var m1 = new personaje(680,142,34,67,'misionero 1',0, spritesMisioneroIzquierda, spritesMisioneroDerecha);
+>>>>>>> master
 	var lancha = new personaje(526,198,108,52,'lancha',0, imagenLancha, imagenLancha);
 
 	var listaPersonajes = [];
@@ -87,6 +104,11 @@
 		lancha.setPosition(lancha.xOrigen, lancha.yOrigen);
 		zonaDerecha = false;
 		zonaIzquierda = false;
+<<<<<<< HEAD
+=======
+		cantMisioneros=0;
+		cantCanibales=0;
+>>>>>>> master
 		moverLancha = false;
 		lanchaEnOrillaDestino = false;
 	}
@@ -194,9 +216,14 @@
 		//Dibujar agua
 		ctx.drawImage(agua,275,canvas.height-82,348,82);
 
+<<<<<<< HEAD
 
 		if(moverLancha && !lanchaEnOrillaDestino)
 		{	
+=======
+		if(moverLancha && !lanchaEnOrillaDestino)
+		{
+>>>>>>> master
 			for(var i = 0;i < listaPersonajes.length; i++)
 			{
 				if(listaPersonajes[i].sentado)listaPersonajes[i].x -= 1;
@@ -215,7 +242,11 @@
 		}
 		else if(moverLancha && lanchaEnOrillaDestino)
 		{
+<<<<<<< HEAD
 			for(var i = 0; i < listaPersonajes.length; i++)
+=======
+			for(var i = 0;i < listaPersonajes.length; i++)
+>>>>>>> master
 			{
 				if(listaPersonajes[i].sentado)listaPersonajes[i].x += 1;
 			}
@@ -232,10 +263,19 @@
 			}
 		}
 		
+<<<<<<< HEAD
 	
 		for(var i = 0; i < listaPersonajes.length; i++)
 		{	
 			
+=======
+		
+
+		for(var i = 0; i < listaPersonajes.length; i++)
+		{	
+			ctx.strokeRect(listaPersonajes[i].x, listaPersonajes[i].y, listaPersonajes[i].width, listaPersonajes[i].height);
+			//ctx.fillRect(listaPersonajes[i].width,listaPersonajes[i].height,canvas.width,canvas.height);
+>>>>>>> master
 			if(listaPersonajes[i].name == 'zorro')
 			{
 				if(listaPersonajes[i].mouseEncima)listaPersonajes[i].drawImageArea(ctx,listaPersonajes[i].spriteActual, 0, 0, 30, 24);
@@ -256,6 +296,7 @@
 		}
 		lancha.drawImageArea(ctx, lancha.spriteActual, 0, 0, 59, 35);
 
+<<<<<<< HEAD
 
 		if(listaPersonajes[0].orilla==1 && listaPersonajes[1].orilla==1 && listaPersonajes[2].orilla==1) {
 			winner = true;
@@ -269,19 +310,38 @@
 		}
 
 		else if(gameover)
+=======
+		if(gameover || winner)
+>>>>>>> master
 		{
 			ctx.textAlign = 'center';
 			ctx.font="40px Arial Black";
 			ctx.fillStyle = 'white';
+<<<<<<< HEAD
 			ctx.fillText('GAME OVER', 450, 144);
+=======
+			if(gameover)
+			{
+				ctx.fillText('GAME OVER', 450, 144);
+			}
+			else if(winner)
+			{
+				ctx.fillText('WINNER', 450, 144);
+			}
+>>>>>>> master
 			ctx.font="20px Arial";
 			ctx.fillText('(Pulsa Enter para reiniciar)',450,164);
 			reset();
 		}
+<<<<<<< HEAD
+=======
+		
+>>>>>>> master
 	}
 
 	function verificar()
 	{
+<<<<<<< HEAD
 		for(var i = 0; i < listaPersonajes.length; i++)
 		{	
 			if(listaPersonajes[i].name == 'zorro' && listaPersonajes[i].orilla==1) cantZorro = 1;
@@ -310,6 +370,31 @@
 		cantZorro = 0;
 		cantOveja = 0;
 		cantCol = 0;
+=======
+		for(var i = 0;i < listaPersonajes.length; i++)
+		{
+			if(listaPersonajes[i].name == 'misionero' && listaPersonajes[i].orilla==1)cantMisioneros++;
+			if(listaPersonajes[i].name == 'canibal' && listaPersonajes[i].orilla==1)cantCanibales++;
+		}
+
+
+		if(cantCanibales > cantMisioneros && cantMisioneros > 0)gameover=true;
+		if(cantMisioneros == cantCanibales && lanchaEnOrillaDestino && cantCanibales + cantMisioneros == 6)winner=true;
+
+		cantMisioneros = 0;
+		cantCanibales = 0;
+		for(var i = 0;i < listaPersonajes.length; i++)
+		{
+			if(listaPersonajes[i].name == 'misionero' && listaPersonajes[i].orilla==0)cantMisioneros++;
+			if(listaPersonajes[i].name == 'canibal' && listaPersonajes[i].orilla==0)cantCanibales++;
+		}
+
+		if(cantCanibales > cantMisioneros && cantMisioneros > 0)gameover=true;
+
+
+		cantMisioneros = 0;
+		cantCanibales = 0;
+>>>>>>> master
 	}
 
 	function enableInputs()
@@ -323,7 +408,15 @@
 		canvas.addEventListener('mousedown', function(evt){ lastPress = evt.which; },false);
 		document.addEventListener('keydown', function (evtx) { lastPress = evtx.which; }, false);
 	}
+<<<<<<< HEAD
 	
+=======
+	/*
+		para crear un objeto de tipo personaje seria asi:
+		var m1 = new personaje(50,50,100,60,'misionero 1',,);
+	*/
+
+>>>>>>> master
 	function personaje(x, y, width, height, name, sentido, spriteIzquierda, spriteDerecha, xDestino, yDestino, inicioSprite, sentado, orilla)
 	{
 		this.x = (x == null) ? 0 : x;
